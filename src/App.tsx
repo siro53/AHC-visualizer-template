@@ -1,7 +1,9 @@
+import { Usage } from "./components/Usage"
+
 function App() {
 	return (
 		<>
-			<h1>hello world!</h1>
+			<Usage />
 		</>
 	)
 }
