@@ -1,6 +1,6 @@
 import config from "../config"
 
-export function Usage() {
+function Usage() {
     return (
         <>
             <p>
@@ -43,5 +43,7 @@ export function Usage() {
 
             <hr />
         </>
-    )
+    );
 };
+
+export default Usage;
