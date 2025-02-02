@@ -1,25 +1,45 @@
 import { ChangeEvent, useState } from "react";
 import config from "../config";
 import JSZip from "jszip";
+import genInput from "../utils/genInput";
 
-function Input() {
+
+type InputProps = {
+    seed: number,
+    setSeed: React.Dispatch<React.SetStateAction<number>>
+};
+
+function Input({
+    seed,
+    setSeed
+}: InputProps) {
     const [inputText, setInputText] = useState("");
-    const [seed, setSeed] = useState(0);
     const [caseNum, setCaseNum] = useState(100);
+    const [progress, setProgress] = useState(0);
 
     const handleDownload = async () => {
         try {
+            setProgress(0);
+
             const zip = new JSZip();
-            zip.file('in.txt', inputText);
-            const content = await zip.generateAsync({ type: "blob" });
+            for (let i = 0; i < caseNum; i++) {
+                const data = await genInput(seed);
+                zip.file(`in_${String(i).padStart(4, "0")}.txt`, data);
+            }
+            const content = await zip.generateAsync(
+                { type: "blob" },
+                meta => { setProgress(meta.percent); }
+            );
 
             const url = window.URL.createObjectURL(content);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "in.zip"
+            a.download = `input_${seed}.zip`
             a.click();
 
             window.URL.revokeObjectURL(url);
+
+            setProgress(0);
         } catch (e) {
             console.error("zip生成に失敗しました", e);
         }
@@ -35,7 +55,8 @@ function Input() {
                         id="seed"
                         value={seed}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => { 
-                            setSeed(Number(e.target.value)); 
+                            seed = Number(e.target.value);
+                            setSeed(seed);
                         }}
                         min={config.input.seed.min}
                         max={config.input.seed.max}
@@ -59,7 +80,7 @@ function Input() {
                 <input
                     type="button"
                     id="download"
-                    value="Download"
+                    value={progress ? `${progress}% downloaded` : "Download"}
                     onClick={handleDownload}
                 />
             </p>
