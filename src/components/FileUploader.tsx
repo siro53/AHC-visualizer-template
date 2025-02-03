@@ -1,24 +1,16 @@
-import { ChangeEvent, useState } from "react";
+import React from "react";
 
 type FileUploaderProps = {
-    setSelectedFile: React.Dispatch<React.SetStateAction<File | undefined>>
+    outputFiles: File[];
+    onChangeFileSelector: React.ChangeEventHandler<HTMLSelectElement>;
+    onChangeDirectoryUploader: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-function FileUploader({ setSelectedFile } : FileUploaderProps) {
-    const [files, setFiles] = useState<File[]>([]);
-
-    const handleFileSelecter = (e: ChangeEvent<HTMLSelectElement>) => {
-        const selectedElement = e.target;
-        setSelectedFile(files[selectedElement.selectedIndex]);
-    };
-
-    const handleDirectoryUploader = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFiles = e.target.files ? Array.from(e.target.files) : [];
-        newFiles.sort((a, b) => a.name.localeCompare(b.name));
-        setFiles(newFiles);
-        setSelectedFile(newFiles.length === 0 ? undefined : newFiles[0]);
-    };
-
+function FileUploader({
+    outputFiles,
+    onChangeFileSelector,
+    onChangeDirectoryUploader
+}: FileUploaderProps) {
     return (
         <> 
             <p>
@@ -28,10 +20,10 @@ function FileUploader({ setSelectedFile } : FileUploaderProps) {
                     {"入力に対応する出力ファイルを選択してください: "}
                     <select 
                         id="file-selector"
-                        disabled={files.length === 0}
-                        onChange={handleFileSelecter}
+                        disabled={outputFiles.length === 0}
+                        onChange={onChangeFileSelector}
                     >
-                        {files.map((file, index) => {
+                        {outputFiles.map((file, index) => {
                             return (
                                 <option key={`file-selector-options-${index}`}>
                                     {file.name}
@@ -44,7 +36,7 @@ function FileUploader({ setSelectedFile } : FileUploaderProps) {
                 <input 
                     type="file"
                     id="directory-uploader"
-                    onChange={handleDirectoryUploader}
+                    onChange={onChangeDirectoryUploader}
                     {...{ webkitdirectory: "true", directory: "true" }}
                 />
             </p>
