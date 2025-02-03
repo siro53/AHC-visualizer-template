@@ -1,16 +1,16 @@
 import React, { ChangeEvent, useState } from "react";
 import config from "../config";
 import JSZip from "jszip";
-import { gen } from "../wasm/declare";
+import { gen } from "../wasm/rust-wasm";
 
 type InputProps = {
     seed: number,
-    setSeed: React.Dispatch<React.SetStateAction<number>>
+    onChangeSeed: React.ChangeEventHandler<HTMLInputElement>
 };
 
 function Input({
     seed,
-    setSeed
+    onChangeSeed
 }: InputProps) {
     const [inputText, setInputText] = useState("");
     const [caseNum, setCaseNum] = useState(100);
@@ -53,10 +53,7 @@ function Input({
                         type="number"
                         id="seed"
                         value={seed}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            seed = Number(e.target.value);
-                            setSeed(seed); 
-                        }}
+                        onChange={onChangeSeed}
                         min={config.input.seed.min}
                         max={config.input.seed.max}
                     />

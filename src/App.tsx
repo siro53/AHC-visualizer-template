@@ -12,9 +12,11 @@ function App() {
 		<>
 			<Usage />
 			<FileUploader setSelectedFile={setSelectedFile}/>
-			<Input seed={seed} setSeed={setSeed} />
+			<Input
+				seed={seed}
+				onChangeSeed={e => { setSeed(Number(e.target.value)); }}
+			/>
 			<Output />
-			<SvgViewer />
 		</>
 	)
 }
