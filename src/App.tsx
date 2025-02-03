@@ -14,26 +14,17 @@ function App() {
 		turn: 0
 	});
 
-	const convertFileToInput = (file: File) => {
+	const convertFileToOutput = (file: File) => {
 		const reader = new FileReader();
 		reader.onload = e => {
 			// readAsText を呼ぶので as string してもよい
 			const textData = e.target?.result as string;
 			setVisualizerInfo({
 				...visualizerInfo,
-				input: textData
+				output: textData
 			});
 		}
 		reader.readAsText(file);
-	};
-
-	const handleDirectoryUploader = (files : File[]) => {
-		// アップロードしたディレクトリ内にテキストファイルがなかったら何もしない
-		if (files.length === 0) return;
-
-		files.sort((a, b) => a.name.localeCompare(b.name));
-		setOutputFiles(files);
-		convertFileToInput(files[0]);
 	};
 
 	return (
@@ -43,11 +34,17 @@ function App() {
 				outputFiles={outputFiles}
 				onChangeDirectoryUploader={e => {
 					const newFiles = e.target.files ? Array.from(e.target.files) : [];
-					handleDirectoryUploader(newFiles);
+
+					// アップロードしたディレクトリ内にテキストファイルがなかったら何もしない
+					if (newFiles.length === 0) return;
+
+					newFiles.sort((a, b) => a.name.localeCompare(b.name));
+					setOutputFiles(newFiles);
+					convertFileToOutput(newFiles[0]);
 				}}
 				onChangeFileSelector={e => {
 					const selectedIndex = e.target.selectedIndex;
-					convertFileToInput(outputFiles[selectedIndex]);
+					convertFileToOutput(outputFiles[selectedIndex]);
 				}}
 			/>
 			<Input
