@@ -6,13 +6,15 @@ import Input from "./components/Input";
 
 function App() {
 	const [_selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+	const [seed, setSeed] = useState(0);
 
 	return (
 		<>
 			<Usage />
 			<FileUploader setSelectedFile={setSelectedFile}/>
-			<Input />
+			<Input seed={seed} setSeed={setSeed} />
 			<Output />
+			<SvgViewer />
 		</>
 	)
 }
